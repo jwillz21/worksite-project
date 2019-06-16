@@ -5,6 +5,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\InquiryNotification;
 use App\Inquiry;
 
 class InquiryController extends Controller
@@ -12,6 +14,7 @@ class InquiryController extends Controller
   public function submitForm(Request $request)
   {
     $errorFound = false;
+
     if(!isset($request->name) || $request->name === "null"){
       $errors['nameError'] = 'This field is required';
       $errorFound = true;
@@ -23,6 +26,7 @@ class InquiryController extends Controller
       $errors['phoneError'] = 'This field is required';
       $errorFound = true;
     }
+
     if(!isset($request->email) || $request->email === "null"){
       $errors['emailError'] = 'This field is required';
       $errorFound = true;
@@ -30,9 +34,10 @@ class InquiryController extends Controller
       $errors['emailError'] = 'Character limit of 50 exceeded';
       $errorFound = true;
     } else if(!filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
-      $errors['emailError'] = 'Email must be valid';
-      $errorsFound = true;
+      $errors['emailError'] = 'Email must be a valid email';
+      $errorFound = true;
     }
+
     if(!isset($request->message) || $request->message === "null"){
       $errors['messageError'] = 'This field is required';
       $errorFound = true;
@@ -41,7 +46,7 @@ class InquiryController extends Controller
       $errorFound = true;
     }
 
-    if($errorFound) return response()->json($errors);
+    if($errorFound) return response()->json($errors, 400);
 
      $inquiry = new Inquiry();
      $inquiry->name = $request->name;
@@ -49,7 +54,9 @@ class InquiryController extends Controller
      $inquiry->phone = $request->phone;
      $inquiry->message = $request->message;
      $inquiry->save();
-    return response()->json(['success'=>'Data is successfully added']);
+
+     Mail::send(new InquiryNotification());
+    return response()->json(['success'=>'Data is successfully added'], 200);
   }
 }
 ?>

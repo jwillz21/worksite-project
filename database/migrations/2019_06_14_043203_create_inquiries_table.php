@@ -6,30 +6,29 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateInquiriesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-     public function up()
-     {
-         Schema::create('inquiries', function (Blueprint $table) {
-             $table->increments('id');
-             $table->string('name');
-             $table->string('email')->unique();
-             $table->string('phone');
-             $table->text('message');
-             $table->timestamps();
-         });
-     }
+		/**
+		 * Run the migrations.
+		 *
+		 * @return void
+		 */
+		 public function up()
+		 {
+				 Schema::create('inquiries', function (Blueprint $table) {
+						 $table->increments('id');
+						 $table->string('name');
+						 $table->string('email');
+						 $table->string('phone');
+						 $table->text('message');
+				 });
+		 }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('inquiries');
-    }
+		/**
+		 * Reverse the migrations.
+		 *
+		 * @return void
+		 */
+		public function down()
+		{
+				Schema::dropIfExists('inquiries');
+		}
 }
